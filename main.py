@@ -9,14 +9,14 @@ app = Flask(__name__)
 api = Api(app)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@/app_bd?host=/cloudsql/app-nube-bd'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@localhost/app_bd'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@/app_bd?host=/cloudsql/app-nube-bd'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@localhost/app_bd'
 
 db = SQLAlchemy(app)
 
-@app.route('/')
+@app.route('/home/')
 def home():
-    url = 'http://127.0.0.1:8080/getall/'
+    url = 'http://127.0.0.1:8080/app-nube/api/v1.0/usuario/getall/'
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -45,7 +45,7 @@ class Usuario(db.Model):
             'password': self.password
             }
 
-@app.route('/getall/', methods = ['GET'])
+@app.route('/app-nube/api/v1.0/usuario/getall/', methods = ['GET'])
 def get_all():
     try:
         users = Usuario.query.all()
@@ -55,5 +55,5 @@ def get_all():
 
 
 if __name__ == '__main__':
-    app.run(debug = False, host = '127.0.0.1', port = 8080)
+    app.run(debug = True, host = '127.0.0.1', port = 8080)
     db.create_all()

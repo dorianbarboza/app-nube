@@ -7,21 +7,17 @@ import json
 
 app = Flask(__name__)
 api = Api(app)
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Test Instance SQL Cloud with Postgresql
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@/app_bd?host=/cloudsql/app-nube-bd'
+# Test localhost
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@localhost/app_bd'
-
 db = SQLAlchemy(app)
 
-@app.route('/home/')
-def home():
-    url = 'http://127.0.0.1:8080/app-nube/api/v1.0/usuario/getall/'
-    response = requests.get(url)
 
-    if response.status_code == 200:
-        contenido = response.content
-    return render_template('home.html', contenido = contenido)
+                       ##########
+                       # MODEL #
+                       #########
 
 class Usuario(db.Model):
 
@@ -45,13 +41,38 @@ class Usuario(db.Model):
             'password': self.password
             }
 
-@app.route('/app-nube/api/v1.0/usuario/getall/', methods = ['GET'])
-def get_all():
-    try:
-        users = Usuario.query.all()
-        return  jsonify([e.serialize() for e in users])
-    except Exception as e:
-	    return(str(e))
+                          ###################
+                          # GET ALL USERS  #
+                          ##################
+
+class UsuarioResource(Resource):
+    def get(self):
+        try:
+            users = Usuario.query.all()
+            return  jsonify([e.serialize() for e in users])
+        except Exception as e:
+            return(str(e))
+
+                        #########################################################
+                        #                      ENDPOINT                         #
+                        # http://127.0.0.1:8080/app-nube/api/v1.0/usuario/get/  #
+                        #########################################################
+
+api.add_resource(UsuarioResource, '/app-nube/api/v1.0/user/get/')
+
+                      #########################
+                      #     RENDER TEMPLATE   #
+                      #########################
+
+@app.route('/home/')
+def home():
+    url = 'http://127.0.0.1:8080/app-nube/api/v1.0/user/get/'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        content = response.content
+    return render_template('home.html', content = content)
+
 
 
 if __name__ == '__main__':

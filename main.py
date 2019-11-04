@@ -9,9 +9,9 @@ app = Flask(__name__)
 api = Api(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Test Instance SQL Cloud with Postgresql
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@/app_bd?host=/cloudsql/app-nube-bd'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@/app_bd?host=/cloudsql/app-nube-bd'
 # Test localhost
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@localhost/app_bd'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dorian:dorian12345@localhost/app_bd'
 db = SQLAlchemy(app)
 
 
